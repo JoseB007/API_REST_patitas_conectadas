@@ -1,0 +1,19 @@
+# Entornos virtuales
+env/
+venv/
+
+# Pycache
+*.pyc
+__pycache__/
+
+# Variables de entorno
+.env
+
+# SQLite
+db.sqlite3
+
+# Media
+media/
+
+# Archivos estáticos
+staticfiles/
