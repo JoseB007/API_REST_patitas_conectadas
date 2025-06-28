@@ -22,7 +22,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class MiPerfilView(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         serializer = UserDetailSerializer(request.user, context={'request': request})
