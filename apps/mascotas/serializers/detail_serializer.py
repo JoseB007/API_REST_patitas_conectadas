@@ -8,10 +8,14 @@ class MascotaDetailSerializer(serializers.ModelSerializer):
     foto_url = serializers.SerializerMethodField()
     likes = serializers.IntegerField(source='likes.count', read_only=True)
     usuario = UserListSerializer(read_only=True)
+    f_creacion = serializers.DateTimeField(
+        format="%d-%m-%Y %H:%M:%S",
+        read_only=True
+    )
 
     class Meta:
         model = Mascota
-        fields = ['id', 'nombre', 'descripcion', 'genero', 'foto_url', 'en_adopcion', 'likes', 'fecha', 'usuario']
+        fields = ['id', 'nombre', 'descripcion', 'genero', 'foto_url', 'en_adopcion', 'likes', 'f_creacion', 'usuario']
 
     def get_foto_url(self, obj):
         request = self.context.get('request')
