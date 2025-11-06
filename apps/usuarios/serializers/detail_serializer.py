@@ -10,4 +10,12 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
+        fields = ['id', 'first_name', 'last_name', 'email']
+
+
+class AdminUserDetailSerializer(serializers.ModelSerializer):
+    # mascotas = MascotaListSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']

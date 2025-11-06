@@ -8,5 +8,13 @@ class UserListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
+        fields = ['url', 'id', 'first_name', 'last_name', 'email']
+
+
+class AdminUserListSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='usuario-detail')
+
+    class Meta:
+        model = User
         fields = ['url', 'id', 'username', 'first_name', 'last_name', 'email']
 

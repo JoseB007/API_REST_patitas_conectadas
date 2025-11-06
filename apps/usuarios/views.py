@@ -16,6 +16,8 @@ from .serializers import (
     UserDetailSerializer, 
     UserUpdateSerializer,
     UserCreateSerializer,
+    AdminUserListSerializer,
+    AdminUserDetailSerializer,
 )
 
 
@@ -27,10 +29,10 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return UserCreateSerializer
         elif self.action == 'retrieve':
-            return UserDetailSerializer
+            return AdminUserDetailSerializer if self.request.user.is_superuser else UserDetailSerializer
         elif self.action in ['update', 'partial_update']:
             return UserUpdateSerializer
-        return UserListSerializer
+        return AdminUserListSerializer if self.request.user.is_superuser else UserListSerializer
     
     def get_permissions(self):
         public_actions = ['create', 'list', 'retrieve']
@@ -45,7 +47,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return [permission() for permission in permission_classes]
     
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], url_path="mi-perfil")
     def mi_perfil(self, request):
         serializer = UserDetailSerializer(request.user)
         return Response(serializer.data)
