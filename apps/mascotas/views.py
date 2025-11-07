@@ -7,6 +7,8 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
 )
 
+from django.shortcuts import get_object_or_404
+
 
 from .models import Mascota
 from .serializers import (
@@ -39,6 +41,7 @@ def api_root(request, format=None):
 class BaseViewSet(viewsets.ModelViewSet):
     queryset = None
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrAdminOrReadOnly]
+    lookup_field = 'uuid'
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -55,7 +58,7 @@ class MascotasViewSet(BaseViewSet):
     queryset = Mascota.objects.filter(en_adopcion=False)
     
     @action(detail=True, methods=['post'], url_path='toggle-like', permission_classes=[IsAuthenticated])
-    def toggle_like(self, request, pk=None):
+    def toggle_like(self, request, **kwargs):
         mascota = self.get_object()
         usuario = request.user
 

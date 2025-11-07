@@ -23,8 +23,8 @@ class MascotaListSerializer(serializers.ModelSerializer):
         """
         request = self.context.get('request')
         if obj.en_adopcion:
-            return reverse('adopcion-detail', args=[obj.pk], request=request)
-        return reverse('mascota-detail', args=[obj.pk], request=request)
+            return reverse('adopcion-detail', args=[obj.uuid], request=request)
+        return reverse('mascota-detail', args=[obj.uuid], request=request)
     
     def get_foto_url(self, obj):
         request = self.context.get('request')

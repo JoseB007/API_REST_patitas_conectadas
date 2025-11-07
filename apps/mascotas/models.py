@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -17,6 +19,7 @@ class Mascota(models.Model):
     foto = models.FileField(upload_to='mascotas/fotos/', blank=True, null=True)
     en_adopcion = models.BooleanField(default=False)
     likes = models.ManyToManyField(User, through='Like', related_name='liked_mascotas')
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     f_creacion = models.DateTimeField(auto_now_add=True)
 
     class Meta:
