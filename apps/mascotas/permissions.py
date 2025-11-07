@@ -7,4 +7,4 @@ class IsOwnerOrAdminOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         # Escritura solo para el dueño
-        return obj.usuario == request.user
+        return obj.usuario == request.user or request.user.is_superuser
