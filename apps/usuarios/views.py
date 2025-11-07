@@ -49,7 +49,7 @@ class UserViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], url_path="mi-perfil")
     def mi_perfil(self, request):
-        serializer = UserDetailSerializer(request.user)
+        serializer = UserDetailSerializer(request.user, context={'request': request})
         return Response(serializer.data)
 
 
