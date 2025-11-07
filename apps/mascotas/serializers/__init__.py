@@ -8,6 +8,5 @@ __all__ = [
     "MascotaListSerializer",
     "MascotaDetailSerializer",
     "MacotaCreateUpdateSerializer",
-    "MascotaListSimpleSerializer",
     "LikeModelSerializer",
 ]

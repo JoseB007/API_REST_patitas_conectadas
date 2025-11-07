@@ -7,6 +7,7 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
 )
 
+
 from .models import Mascota
 from .serializers import (
     MascotaListSerializer, 
@@ -15,7 +16,6 @@ from .serializers import (
     LikeModelSerializer,
 )
 from .permissions import IsOwnerOrAdminOrReadOnly
-
 from .models import Like
 
 
@@ -65,7 +65,10 @@ class MascotasViewSet(BaseViewSet):
             return Response({'Liked': False})
         else:
             Like.objects.create(usuario=usuario, mascota=mascota)
-            return Response({'Liked': True})
+            return Response({
+                'Liked': True,
+                'msj': "Indicaste que te gusta este amiguito!"
+            })
 
 
 class AdopcionesViewSet(BaseViewSet):
