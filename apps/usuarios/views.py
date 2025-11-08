@@ -6,6 +6,7 @@ from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
 )
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from django.contrib.auth.models import User
 
@@ -18,6 +19,7 @@ from .serializers import (
     UserCreateSerializer,
     AdminUserListSerializer,
     AdminUserDetailSerializer,
+    MyTokenObtainPairSerializer,
 )
 
 
@@ -68,3 +70,5 @@ class MiPerfilView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
 
 
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
