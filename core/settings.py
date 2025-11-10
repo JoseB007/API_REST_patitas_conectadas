@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     # DRF JWT
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    # Django-filter
+    'django_filters',
     # DRF AUTENTICACIÓN TOKEN
     # 'rest_framework.authtoken'
 ]

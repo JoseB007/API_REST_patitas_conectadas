@@ -9,7 +9,6 @@ from rest_framework.permissions import (
 
 from django.shortcuts import get_object_or_404
 
-
 from .models import Mascota
 from .serializers import (
     MascotaListSerializer, 
@@ -19,8 +18,9 @@ from .serializers import (
 )
 from .permissions import IsOwnerOrAdminOrReadOnly
 from .models import Like
+from .filters import MascotaFilter
 
-
+from django_filters import rest_framework as filters
 
 from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view
@@ -43,6 +43,9 @@ class BaseViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrAdminOrReadOnly]
     lookup_field = 'uuid'
 
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = MascotaFilter
+
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return MascotaDetailSerializer
@@ -56,6 +59,11 @@ class BaseViewSet(viewsets.ModelViewSet):
 
 class MascotasViewSet(BaseViewSet):
     queryset = Mascota.objects.filter(en_adopcion=False)
+
+    ############# Ordenamiento no funcional aún ##################
+    # filter_backends = (filters.OrderingFilter,)
+    # ordering_fields = ['f_creacion']
+    # ordering = ['f_creacion']
     
     @action(detail=True, methods=['post'], url_path='toggle-like', permission_classes=[IsAuthenticated])
     def toggle_like(self, request, **kwargs):
