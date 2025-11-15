@@ -2,15 +2,13 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
 )
-from rest_framework_simplejwt.views import TokenObtainPairView
 
 from django.contrib.auth.models import User
-
-from core.utils.permissions import IsSelfOrAdmin
 
 from .serializers import (
     UserListSerializer, 
@@ -21,6 +19,10 @@ from .serializers import (
     AdminUserDetailSerializer,
     MyTokenObtainPairSerializer,
 )
+
+from core.utils.permissions import IsSelfOrAdmin
+from apps.notificaciones.models import Notificacion
+from apps.notificaciones.serializers import NotificacionModelSerializer
 
 
 
@@ -53,6 +55,16 @@ class UserViewSet(viewsets.ModelViewSet):
     def mi_perfil(self, request):
         serializer = UserDetailSerializer(request.user, context={'request': request})
         return Response(serializer.data)
+
+    ############################################################################
+    ################# MALAS PRACTICAS; DEJAR DE EJEMPLO ########################
+    ############################################################################
+    
+    # @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    # def notificaciones(self, request):
+    #     notificaciones_usuario = Notificacion.objects.filter(destinatario=request.user)
+    #     serializer = NotificacionModelSerializer(notificaciones_usuario, many=True)
+    #     return Response(serializer.data)
 
 
 class MiPerfilView(APIView):

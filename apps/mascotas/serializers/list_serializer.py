@@ -15,7 +15,7 @@ class MascotaListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Mascota
-        fields = ['url', 'id', 'nombre', 'descripcion', 'genero', 'foto_url', 'en_adopcion', 'likes', 'f_creacion']
+        fields = ['url', 'id', 'nombre', 'descripcion', 'genero', 'foto_url', 'en_adopcion', 'likes', 'uuid', 'f_creacion']
 
     def get_url(self, obj):
         """

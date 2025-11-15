@@ -15,7 +15,7 @@ class MascotaDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mascota
-        fields = ['id', 'nombre', 'descripcion', 'genero', 'foto_url', 'en_adopcion', 'likes', 'f_creacion', 'usuario']
+        fields = ['id', 'nombre', 'descripcion', 'genero', 'foto_url', 'en_adopcion', 'likes', 'uuid', 'f_creacion', 'usuario']
 
     def get_foto_url(self, obj):
         request = self.context.get('request')

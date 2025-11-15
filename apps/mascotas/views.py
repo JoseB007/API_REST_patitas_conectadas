@@ -1,29 +1,25 @@
 from rest_framework import viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.permissions import (
-    AllowAny,
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
 )
 
-from django.shortcuts import get_object_or_404
-
-from .models import Mascota
+from .models import Mascota, Like
+from .permissions import IsOwnerOrAdminOrReadOnly
+from .filters import MascotaFilter
 from .serializers import (
     MascotaListSerializer, 
     MascotaDetailSerializer, 
     MacotaCreateUpdateSerializer,
     LikeModelSerializer,
 )
-from .permissions import IsOwnerOrAdminOrReadOnly
-from .models import Like
-from .filters import MascotaFilter
 
 from django_filters import rest_framework as filters
 
-from rest_framework.reverse import reverse
-from rest_framework.decorators import api_view
+
 
 @api_view(['GET'])
 def api_root(request, format=None):
