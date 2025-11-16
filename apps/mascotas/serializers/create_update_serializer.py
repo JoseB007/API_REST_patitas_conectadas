@@ -32,12 +32,12 @@ class MacotaCreateUpdateSerializer(serializers.ModelSerializer):
 
         return value
     
-    def create(self, validated_data):
-        """
-        Asociar la mascota al usuario autenticado.
-        """
-        usuario = self.context['request'].user
-        return Mascota.objects.create(usuario=usuario, **validated_data)
+    # def create(self, validated_data):
+    #     """
+    #     Asociar la mascota al usuario autenticado.
+    #     """
+    #     usuario = self.context['request'].user
+    #     return Mascota.objects.create(usuario=usuario, **validated_data)
     
     def update(self, instance, validated_data):
         """
@@ -47,5 +47,5 @@ class MacotaCreateUpdateSerializer(serializers.ModelSerializer):
 
         if foto is None and self.partial:
             validated_data['foto'] = instance.foto
-            
+
         return super().update(instance, validated_data)
