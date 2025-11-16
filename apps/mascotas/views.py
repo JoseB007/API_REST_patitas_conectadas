@@ -35,6 +35,13 @@ def api_root(request, format=None):
 
 
 class BaseViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para todas las operaciones CRUD de Mascota.
+    - Usa `lookup_field = 'uuid'`
+    - Selecciona serializer según la acción.
+    - Permite subir imágenes al crear o editar.
+    """
+
     queryset = None
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrAdminOrReadOnly]
     lookup_field = 'uuid'
@@ -56,11 +63,6 @@ class BaseViewSet(viewsets.ModelViewSet):
 class MascotasViewSet(BaseViewSet):
     queryset = Mascota.objects.filter(en_adopcion=False)
 
-    ############# Ordenamiento no funcional aún ##################
-    # filter_backends = (filters.OrderingFilter,)
-    # ordering_fields = ['f_creacion']
-    # ordering = ['f_creacion']
-    
     @action(detail=True, methods=['post'], url_path='toggle-like', permission_classes=[IsAuthenticated])
     def toggle_like(self, request, **kwargs):
         mascota = self.get_object()
