@@ -42,14 +42,22 @@ INSTALLED_APPS = [
     'apps.notificaciones',
     # DJANGO REST FRAMEWORK
     "rest_framework",
+    'rest_framework.authtoken',
+    # Django-Rest-Auth
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
     # DRF JWT
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     # Django-filter
     'django_filters',
-    # DRF AUTENTICACIÓN TOKEN
-    # 'rest_framework.authtoken'
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,6 +67,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Allauth
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -144,19 +154,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    # 'PAGE_SIZE': 10,
-
     # Autenticación 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.TokenAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ]
 }
 
 
+# djangorestframework_simplejwt
 from datetime import timedelta
 
 SIMPLE_JWT = {
@@ -164,7 +171,34 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
-    "UPDATE_LAST_LOGIN": False, # Usado para actualizar el last_login de la tabla de usuarios auth.user
+    
+    "UPDATE_LAST_LOGIN": True,
 
     "TOKEN_OBTAIN_SERIALIZER": "apps.usuarios.serializers.token_obtain_serializer.MyTokenObtainPairSerializer",
 }
+
+
+ACCOUNT_SIGNUP_FIELDS = ['username', 'email*', 'password1*', 'password2*']
+ACCOUNT_LOGIN_METHODS = ['email']
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+
+
+# Django-Rest-Auth
+REST_AUTH = {
+    'USE_JWT': True,
+
+    'JWT_AUTH_COOKIE': 'access_token',
+    'JWT_AUTH_REFRESH_COOKIE': 'refresh_token',
+
+    'JWT_AUTH_SECURE': False, # Permite HTTP / Cambiar a True en producción HTTPS
+    'JWT_AUTH_HTTPONLY': True, # True tokens como cookies
+    'JWT_AUTH_SAMESITE': 'Lax',
+
+    'JWT_AUTH_COOKIE_USE_CSRF': True,
+    'JWT_AUTH_COOKIE_ENFORCE_CSRF_ON_UNAUTHENTICATED': False,
+}
+
+
+# EMAIL CONFIG
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = "Patitas Conectadas"

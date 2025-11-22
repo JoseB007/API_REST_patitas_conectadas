@@ -19,20 +19,23 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from apps.usuarios.registro.views import CustomRegisterView
+
+from dj_rest_auth.registration.views import VerifyEmailView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('rest_framework.urls')),
+    # Django-allauth
+    path('accounts/', include('allauth.urls')),
+    # APPS
     path('', include('apps.mascotas.urls')),
     path('', include('apps.usuarios.urls')),
     path('', include('apps.notificaciones.urls')),
-    # JWT
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # django-rest-auth
+    path('auth/', include('dj_rest_auth.urls')),
+    path('auth/registration/', CustomRegisterView.as_view(), name='custom_register'),
+    path('auth/account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
