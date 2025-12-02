@@ -181,10 +181,15 @@ SIMPLE_JWT = {
 }
 
 
-ACCOUNT_SIGNUP_FIELDS = ['username', 'email*', 'password1*', 'password2*']
-ACCOUNT_LOGIN_METHODS = ['email']
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    # Backend de auth de allauth necesario para iniciar sesion con email
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
 
 # Django-Rest-Auth
 REST_AUTH = {
@@ -199,6 +204,8 @@ REST_AUTH = {
 
     'JWT_AUTH_COOKIE_USE_CSRF': True,
     'JWT_AUTH_COOKIE_ENFORCE_CSRF_ON_UNAUTHENTICATED': False,
+
+    "LOGIN_SERIALIZER": "apps.usuarios.registro.serializers.PatitasLoginSerializer",
 }
 
 
