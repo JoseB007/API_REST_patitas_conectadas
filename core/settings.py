@@ -206,6 +206,7 @@ REST_AUTH = {
     'JWT_AUTH_COOKIE_ENFORCE_CSRF_ON_UNAUTHENTICATED': False,
 
     "LOGIN_SERIALIZER": "apps.usuarios.registro.serializers.PatitasLoginSerializer",
+    'REGISTER_SERIALIZER': "apps.usuarios.registro.serializers.PatitasRegisterSerializer",
 }
 
 
