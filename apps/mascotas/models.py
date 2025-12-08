@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db.models import UniqueConstraint
 from django.contrib.auth.models import User
 
 
@@ -57,3 +58,17 @@ class Like(models.Model):
         return f"{self.usuario.username} ha dado like a {self.mascota.nombre}"
 
 
+class RankingMensual(models.Model):
+    mascota = models.ForeignKey(Mascota, on_delete=models.CASCADE, related_name='ganadora_mes')
+    mes = models.PositiveSmallIntegerField()
+    anio = models.PositiveSmallIntegerField()
+    total_likes = models.PositiveIntegerField()
+
+    class Meta:
+        verbose_name = "Ranking Mensual"
+        verbose_name_plural = "Ranking Mensual"
+        ordering = ["-anio", "-mes"]
+        UniqueConstraint(
+            fields=['mes', 'anio'], 
+            name="mascota_mes_anio"
+        )

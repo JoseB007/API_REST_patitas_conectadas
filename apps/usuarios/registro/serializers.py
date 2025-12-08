@@ -5,6 +5,10 @@ from rest_framework import serializers
 
 from allauth.account import app_settings as allauth_settings
 
+from django.contrib.auth import get_user_model
+
+user = get_user_model()
+
 
 class PatitasLoginSerializer(LoginSerializer):
 
@@ -71,4 +75,9 @@ class PatitasRegisterSerializer(RegisterSerializer):
             field: self.validated_data.get(field, '')
             for field in self.fields
         }
+    
+    def validate_email(self, value):
+        if user.objects.filter(email=value).exists():
+            raise serializers.ValidationError("El correo ya se encuentra en uso.")
+        return value
 

@@ -12,4 +12,5 @@ router.register(r'likes', views.LikedViewSet, basename='like')
 urlpatterns = [
     path('', views.api_root),
     path('', include(router.urls)),
+    path('ranking/', views.MascotasRankingView.as_view(), name='ranking'),
 ]

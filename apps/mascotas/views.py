@@ -1,10 +1,12 @@
 from rest_framework import viewsets
+from rest_framework.views import APIView
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
+    AllowAny,
 )
 
 from .models import Mascota, Like
@@ -15,6 +17,14 @@ from .serializers import (
     MascotaDetailSerializer, 
     MacotaCreateUpdateSerializer,
     LikeModelSerializer,
+)
+
+from .services.mascotas_ranking import RankingService
+
+from .utils import (
+    get_today,
+    get_yesterday,
+    get_last_week_range
 )
 
 from django_filters import rest_framework as filters
@@ -88,3 +98,39 @@ class LikedViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeModelSerializer
 
+    
+class MascotasRankingView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        rango = request.query_params.get("rango", "global")
+
+        hoy = get_today()
+        ayer = get_yesterday()
+        inicio, fin = get_last_week_range()
+
+        manejadores = {
+            "global": lambda: RankingService.top_global(),
+            "hoy": lambda: RankingService.top_por_fecha(hoy),
+            "ayer": lambda: RankingService.top_por_fecha(ayer),
+            "semana_pasada": lambda: RankingService.top_por_rango(inicio, fin)
+        }
+
+        if rango not in manejadores:
+            return Response({
+                'error': 'Parámetro "rango" inválido'
+            }, status=400)
+        
+        resultado = manejadores[rango]()
+        many = isinstance(resultado, list) or hasattr(resultado, "__iter__")
+
+        serializer = MascotaDetailSerializer(
+            resultado,
+            many=many,
+            context={'request': request}
+        )
+
+        return Response({
+            "rango": rango,
+            "data": serializer.data
+        })
