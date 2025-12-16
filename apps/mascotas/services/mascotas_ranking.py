@@ -1,6 +1,8 @@
 # services/ranking_service.py
 from django.db.models import Count, Q
+
 from apps.mascotas.models import Mascota
+
 
 class RankingService:
 

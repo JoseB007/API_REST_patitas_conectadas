@@ -5,8 +5,10 @@ from apps.mascotas.models import Mascota
 
 
 class MascotaListSerializer(serializers.ModelSerializer):
+    especie = serializers.SerializerMethodField()
+    raza = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
-    likes = serializers.IntegerField(source='likes.count', read_only=True)
+    likes = serializers.IntegerField(source='likes_count', read_only=True)
     foto_url = serializers.SerializerMethodField()
     f_creacion = serializers.DateTimeField(
         format="%d-%m-%Y %H:%M:%S",
@@ -15,8 +17,14 @@ class MascotaListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Mascota
-        fields = ['url', 'id', 'nombre', 'descripcion', 'genero', 'foto_url', 'en_adopcion', 'likes', 'uuid', 'f_creacion']
+        fields = ['url', 'nombre', 'descripcion', 'genero', 'foto_url', 'en_adopcion', 'likes', 'especie', 'raza', 'f_creacion']
 
+    def get_especie(self, obj):
+        return obj.especie.nombre if obj.especie else None
+
+    def get_raza(self, obj):
+        return obj.raza.nombre if obj.raza else None
+    
     def get_url(self, obj):
         """
         Devuelve la URL detallada dependiendo si la mascota está en adopción o no.

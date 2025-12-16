@@ -1,9 +1,21 @@
 from rest_framework import serializers
 
-from apps.mascotas.models import Mascota
+from apps.mascotas.models import Mascota, Especie, Raza
 
 
 class MacotaCreateUpdateSerializer(serializers.ModelSerializer):
+    especie = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Especie.objects.all(),
+        required=False,
+        allow_null=True
+    )
+    raza = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Raza.objects.all(),
+        required=False,
+        allow_null=True
+    )
 
     foto = serializers.ImageField(
         required=False,
@@ -13,7 +25,7 @@ class MacotaCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mascota
-        fields = ['nombre', 'descripcion', 'genero', 'foto', 'en_adopcion']
+        fields = ['nombre', 'descripcion', 'genero', 'foto', 'especie', 'raza', 'en_adopcion']
 
     def validate_foto(self, value):
         """

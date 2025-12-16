@@ -29,7 +29,8 @@ urlpatterns = [
     # Django-allauth
     path('accounts/', include('allauth.urls')),
     # APPS
-    path('', include('apps.mascotas.urls')),
+    path('', include('apps.mascotas.routers.mascota_urls')),
+    path('', include('apps.mascotas.routers.especie_raza_urls')),
     path('', include('apps.usuarios.urls')),
     path('', include('apps.notificaciones.urls')),
     # django-rest-auth

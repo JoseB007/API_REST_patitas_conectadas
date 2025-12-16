@@ -6,4 +6,4 @@ class MascotasConfig(AppConfig):
     name = 'apps.mascotas'
 
     def ready(self):
-        import apps.mascotas.signals
+        import apps.mascotas.utils.signals

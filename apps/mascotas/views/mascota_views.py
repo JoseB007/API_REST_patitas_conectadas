@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
@@ -9,19 +9,19 @@ from rest_framework.permissions import (
     AllowAny,
 )
 
-from .models import Mascota, Like
-from .permissions import IsOwnerOrAdminOrReadOnly
-from .filters import MascotaFilter
-from .serializers import (
+from ..models import Mascota, Like
+from ..utils.permissions import IsOwnerOrAdminOrReadOnly
+from ..filters.mascotas_filters import MascotaFilter
+from ..serializers import (
     MascotaListSerializer, 
     MascotaDetailSerializer, 
     MacotaCreateUpdateSerializer,
     LikeModelSerializer,
 )
 
-from .services.mascotas_ranking import RankingService
+from ..services.mascotas_ranking import RankingService
 
-from .utils import (
+from ..utils.timezone import (
     get_today,
     get_yesterday,
     get_last_week_range
@@ -29,6 +29,7 @@ from .utils import (
 
 from django_filters import rest_framework as filters
 
+from django.db.models import Count
 
 
 @api_view(['GET'])
@@ -71,7 +72,11 @@ class BaseViewSet(viewsets.ModelViewSet):
 
 
 class MascotasViewSet(BaseViewSet):
-    queryset = Mascota.objects.filter(en_adopcion=False)
+    queryset = queryset = Mascota.objects.filter(
+        en_adopcion=False
+    ).annotate(
+        likes_count=Count('likes')
+    )
 
     @action(detail=True, methods=['post'], url_path='toggle-like', permission_classes=[IsAuthenticated])
     def toggle_like(self, request, **kwargs):
@@ -119,7 +124,7 @@ class MascotasRankingView(APIView):
         if rango not in manejadores:
             return Response({
                 'error': 'Parámetro "rango" inválido'
-            }, status=400)
+            }, status=status.HTTP_400_BAD_REQUEST)
         
         resultado = manejadores[rango]()
         many = isinstance(resultado, list) or hasattr(resultado, "__iter__")
@@ -133,4 +138,4 @@ class MascotasRankingView(APIView):
         return Response({
             "rango": rango,
             "data": serializer.data
-        })
+        }, status=status.HTTP_200_OK)
