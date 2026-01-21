@@ -21,9 +21,10 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
         return response
       } catch (err) {
-        this.error = err.message || 'Error al iniciar sesión'
+        // Si falla el login, nos aseguramos que el estado esté limpio
         this.isAuthenticated = false
         this.user = null
+        this.error = err.message || 'Error al iniciar sesión'
         throw err
       } finally {
         this.loading = false
@@ -36,13 +37,17 @@ export const useAuthStore = defineStore('auth', {
 
       try {
         await authLogout()
-        // Limpiar estado
-        this.user = null
-        this.isAuthenticated = false
       } catch (err) {
         this.error = err.message || 'Error al cerrar sesión'
-        throw err
+        // No lanzamos el error si queremos que el logout local proceda siempre suavemente,
+        // pero para cumplir con api estándar, a veces se prefiere lanzar.
+        // Sin embargo, el requisito dice "Limpiar estado".
+        // Vamos a registrar el error pero permitir la limpieza en finally.
+        console.error('Logout error:', err)
       } finally {
+        // Limpiar estado siempre, haya funcionado o no la petición al backend
+        this.user = null
+        this.isAuthenticated = false
         this.loading = false
       }
     },
@@ -57,9 +62,11 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
         return user
       } catch (err) {
-        this.error = err.message || 'Error al obtener el usuario'
+        // Si falla fetchUser (y el refresh automático de api.js también falló),
+        // el usuario no está autenticado.
         this.isAuthenticated = false
         this.user = null
+        this.error = err.message || 'Error al obtener el usuario'
         throw err
       } finally {
         this.loading = false
